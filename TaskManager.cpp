@@ -40,7 +40,12 @@ void TaskManager::Run() {
         std::this_thread::sleep_until(
             std::chrono::system_clock::from_time_t(task.timestamp));
       }
-      task.task();
+      try {
+          task.task();
+      } catch (...) {
+          lock.lock();
+          throw;
+      }
       lock.lock();
     }
     if (end_) {
